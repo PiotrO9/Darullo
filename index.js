@@ -1,5 +1,5 @@
 const { Client, GatewayIntentBits, PermissionsBitField, Permissions, EmbedBuilder } = require('discord.js');
-// const botApiKey = require('./key.js');
+const botApiKey = require('./key.js');
 
 const prefix = ">";
 
@@ -68,4 +68,4 @@ client.on("messageCreate", async(message) => {
     }
 });
 
-client.login('MTA0NDY3MDcyMjgwNDU1MTc4MA.GkjbId.DPSptOHyioxLvmUnHRsMx6QMsxroV5rY-ng91M');
+client.login(botApiKey.botKey);
