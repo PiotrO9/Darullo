@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits, PermissionsBitField, Permissions, EmbedBuilder } = require('discord.js');
+const { MessageAttachment } = require('discord.js');
 const botApiKey = require('./key.js');
 
 const prefix = ">";
@@ -6,7 +7,7 @@ const prefix = ">";
 const client = new Client({ intents: [GatewayIntentBits.Guilds, 
                                 GatewayIntentBits.GuildMessages, 
                                 GatewayIntentBits.MessageContent, 
-                                GatewayIntentBits.GuildMembers]});
+                                GatewayIntentBits.GuildMembers,]});
 
 const InfoEmbed = new EmbedBuilder()
 .setTitle("Darullo INFO")
@@ -15,7 +16,7 @@ const InfoEmbed = new EmbedBuilder()
 .addFields(
   {name: prefix + "info", value: "Wyświetla infromacje i dostępne komendy", inline: false},
   {name: prefix + "pozdro", value: "Pozdrawia użytkownika", inline: false},
-  {name: prefix + "szambonurek", value: "Jeszcze nie działa ale będzie działać", inline: true},
+  {name: prefix + "szambonurek", value: "Wyrzuca losowego użytkownika z kanału głoswego", inline: true},
 )
 
 client.on("ready", () => {
@@ -47,47 +48,75 @@ client.on("messageCreate", async(message) => {
         case "szambonurek":
             {
                 var usersFromVoiceChannel = new Array();
+                var usersNicknames = new Array();
+                var usersChannels = new Array();
+                
                 message.guild.members.cache.filter(member => {
                     if(!member.user.bot)
                     {
                         usersFromVoiceChannel.push(member.id);
+                        usersNicknames.push(member.nickname);
+                        usersChannels.push(member.voice.channelId);
                     }
                 });
                 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min;
 
-                let targetUser = message.guild.members.fetch(usersFromVoiceChannel[random(0, usersFromVoiceChannel.length)]);
+                let SelectedIdOfUserFromVoiceChannel = usersFromVoiceChannel[random(0, usersFromVoiceChannel.length)];
+                let targetUser = message.guild.members.fetch(SelectedIdOfUserFromVoiceChannel);
                 (await targetUser).voice.setChannel(null);
+                removeUserFromArray(usersFromVoiceChannel, SelectedIdOfUserFromVoiceChannel);
 
                 let metry = Math.floor(Math.random()*11034+1);
 
-                if(metry <= 5000)
+                if(usersFromVoiceChannel == [])
                 {
-                    message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów")
+                    if(metry <= 5000)
+                    {
+                        message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów")
+                    }
+                    else if(metry > 5000 && metry <= 10000)
+                    {
+                        message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów");
+                    }
+                    else if(metry > 10000 && metry <= 11000)
+                    {
+                        message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów, rów Mariański wita a czoło wypierdala z kanału", {tts:true} )
+                    }
+                    else if(liczba > 11000)
+                    {
+                        message.channel.send((await targetUser).nickname + "zanurkował na " + metry + " metrów, tutaj rów Mariański to highground",{tts:true})
+                    }
                 }
-                else if(metry > 5000 && metry <= 10000)
-                {
-                    message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów");
-                }
-                else if(metry > 10000 && metry <= 11000)
-                {
-                    message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów, rów Mariański wita a czoło wypierdala z kanału", {tts:true} )
 
-                    (await targetUser).voice.setChannel(null);
-                }
-                else if(liczba > 11000)
-                {
-                    message.channel.send((await targetUser).nickname + "zanurkował na " + metry + " metrów, tutaj rów Mariański to highground",{tts:true})
-                    (await targetUser).voice.setChannel(null);
-                }
+                console.log(usersFromVoiceChannel);
+                // console.log(usersNicknames);
+                // console.log(usersChannels);
 
+                break;
+            }
+        case "wspomnienia":
+            {
+                message.channel.send("adi", {tts: true});
+                message.channel.send({
+                    files: [{
+                        attachment: "images/adi.png",
+                    }]
+                });
                 break;
             }
         default:
             {
-                console.log("default");
+                console.log("123");
                 break;
             }
     }
 });
+
+function removeUserFromArray(arrayWithUsers, idToRemove){
+    const index = arrayWithUsers.indexOf(idToRemove);
+    if(index > -1) {
+        arrayWithUsers.splice(index, 1);
+    }
+}
 
 client.login(botApiKey.botKey);
