@@ -58,6 +58,28 @@ client.on("messageCreate", async(message) => {
                 let targetUser = message.guild.members.fetch(usersFromVoiceChannel[random(0, usersFromVoiceChannel.length)]);
                 (await targetUser).voice.setChannel(null);
 
+                let metry = Math.floor(Math.random()*11034+1);
+
+                if(metry <= 5000)
+                {
+                    message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów")
+                }
+                else if(metry > 5000 && metry <= 10000)
+                {
+                    message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów");
+                }
+                else if(metry > 10000 && metry <= 11000)
+                {
+                    message.channel.send((await targetUser).nickname + " zanurkował na " + metry + " metrów, rów Mariański wita a czoło wypierdala z kanału", {tts:true} )
+
+                    (await targetUser).voice.setChannel(null);
+                }
+                else if(liczba > 11000)
+                {
+                    message.channel.send((await targetUser).nickname + "zanurkował na " + metry + " metrów, tutaj rów Mariański to highground",{tts:true})
+                    (await targetUser).voice.setChannel(null);
+                }
+
                 break;
             }
         default:
